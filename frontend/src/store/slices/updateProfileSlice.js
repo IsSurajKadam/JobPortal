@@ -61,6 +61,7 @@ export const updateProfile = (data) => async (dispatch) => {
         error.response.data.message || "Failed to update profile."
       )
     );
+    console.log("error ",error);
   }
 };
 export const updatePassword = (data) => async (dispatch) => {
