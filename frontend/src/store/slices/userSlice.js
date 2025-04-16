@@ -117,7 +117,7 @@ const userSlice = createSlice({
 export const getSavedJobs = () => async (dispatch) => {
   dispatch(userSlice.actions.getSavedJobsRequest());
   try {
-    const response = await axios.get("http://localhost:8000/api/v1/user/saved-jobs", {
+    const response = await axios.get("https://job-portal-aq95.onrender.com/api/v1/user/saved-jobs", {
       withCredentials: true,
     });
     dispatch(userSlice.actions.getSavedJobsSuccess(response.data.savedJobs));
@@ -129,7 +129,7 @@ export const getSavedJobs = () => async (dispatch) => {
 export const saveJob = (jobId) => async (dispatch) => {
   try {
     const response = await axios.post(
-      `http://localhost:8000/api/v1/user/save-job/${jobId}`,
+      `https://job-portal-aq95.onrender.com/api/v1/user/save-job/${jobId}`,
       {},
       { withCredentials: true }
     );
@@ -142,7 +142,7 @@ export const saveJob = (jobId) => async (dispatch) => {
 export const unsaveJob = (jobId) => async (dispatch) => {
   try {
     const response = await axios.delete(
-      `http://localhost:8000/api/v1/user/unsave-job/${jobId}`,
+      `https://job-portal-aq95.onrender.com/api/v1/user/unsave-job/${jobId}`,
       { withCredentials: true }
     );
     dispatch(userSlice.actions.unsaveJobSuccess(jobId));
@@ -155,7 +155,7 @@ export const register = (data) => async (dispatch) => {
   dispatch(userSlice.actions.registerRequest());
   try {
     const response = await axios.post(
-      "http://localhost:8000/api/v1/user/register",
+      "https://job-portal-aq95.onrender.com/api/v1/user/register",
       data,
       {
         withCredentials: true,
@@ -173,7 +173,7 @@ export const login = (data) => async (dispatch) => {
   dispatch(userSlice.actions.loginRequest());
   try {
     const response = await axios.post(
-      "http://localhost:8000/api/v1/user/login",
+      "https://job-portal-aq95.onrender.com/api/v1/user/login",
       data,
       {
         withCredentials: true,
@@ -190,7 +190,7 @@ export const login = (data) => async (dispatch) => {
 export const getUser = () => async (dispatch) => {
   dispatch(userSlice.actions.fetchUserRequest());
   try {
-    const response = await axios.get("http://localhost:8000/api/v1/user/me", {
+    const response = await axios.get("https://job-portal-aq95.onrender.com/api/v1/user/me", {
       withCredentials: true,
     });
     dispatch(userSlice.actions.fetchUserSuccess(response.data.user));
@@ -202,7 +202,7 @@ export const getUser = () => async (dispatch) => {
 
 export const logout = () => async (dispatch) => {
   try {
-    await axios.get("http://localhost:8000/api/v1/user/logout", {
+    await axios.get("https://job-portal-aq95.onrender.com/api/v1/user/logout", {
       withCredentials: true,
     });
     dispatch(userSlice.actions.logoutSuccess());

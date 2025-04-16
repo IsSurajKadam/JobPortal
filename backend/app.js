@@ -24,7 +24,7 @@ import { scheduleJobDeletion } from './automation/cronJobs.js';
 
  app.use(cors(
   {
-origin:[process.env.FRONTEND_URL],
+origin:"https://job-portal-aq95.onrender.com",
 methods:["GET","POST","PUT","DELETE"],
 credentials:true
   }
