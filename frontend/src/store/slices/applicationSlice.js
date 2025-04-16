@@ -101,7 +101,7 @@ export const fetchEmployerApplications = () => async (dispatch) => {
   dispatch(applicationSlice.actions.requestForAllApplications());
   try {
     const { data } = await axios.get(
-      "http://localhost:8000/api/v1/application/employer/getall",
+      "https://job-portal-aq95.onrender.com/api/v1/application/employer/getall",
       { withCredentials: true }
     );
     dispatch(applicationSlice.actions.successForAllApplications(data.applications));
@@ -118,7 +118,7 @@ export const fetchJobSeekerApplications = () => async (dispatch) => {
   dispatch(applicationSlice.actions.requestForMyApplications());
   try {
     const { data } = await axios.get(
-      "http://localhost:8000/api/v1/application/jobseeker/getall",
+      "https://job-portal-aq95.onrender.com/api/v1/application/jobseeker/getall",
       { withCredentials: true }
     );
     dispatch(applicationSlice.actions.successForMyApplications(data.applications));
@@ -136,7 +136,7 @@ export const fetchApplicationById = (id) => async (dispatch) => {
 
   try {
     const { data } = await axios.get(
-      `http://localhost:8000/api/v1/application/application/${id}`,
+      `https://job-portal-aq95.onrender.com/api/v1/application/application/${id}`,
       { withCredentials: true }
     );
     console.log("id",id);
@@ -154,7 +154,7 @@ export const postApplication = (data, jobId) => async (dispatch) => {
   dispatch(applicationSlice.actions.requestForPostApplication());
   try {
     const { data: response } = await axios.post(
-      `http://localhost:8000/api/v1/application/post/${jobId}`,
+      `https://job-portal-aq95.onrender.com/api/v1/application/post/${jobId}`,
       data,
       {
         withCredentials: true,
@@ -176,7 +176,7 @@ export const deleteApplication = (id) => async (dispatch) => {
   dispatch(applicationSlice.actions.requestForDeleteApplication());
   try {
     const { data } = await axios.delete(
-      `http://localhost:8000/api/v1/application/delete/${id}`,
+      `https://job-portal-aq95.onrender.com/api/v1/application/delete/${id}`,
       { withCredentials: true }
     );
     dispatch(applicationSlice.actions.successForDeleteApplication(data.message));
@@ -194,7 +194,7 @@ export const updateApplicationStatus = (id, status) => async (dispatch) => {
   
   try {
     await axios.post(
-      `http://localhost:8000/api/v1/application/status/${id}`,
+      `https://job-portal-aq95.onrender.com/api/v1/application/status/${id}`,
       { status },
       { withCredentials: true }
     );

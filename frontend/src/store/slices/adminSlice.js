@@ -70,7 +70,7 @@ export const blockEmployer = (employerId, durationInDays) => async (dispatch) =>
   dispatch(requestStart());
   try {
     const { data } = await axios.post(
-      `http://localhost:8000/api/v1/admin/block-employer/${employerId}`,
+      `https://job-portal-aq95.onrender.com/api/v1/admin/block-employer/${employerId}`,
       { durationInDays },
       { withCredentials: true }
     );
@@ -85,7 +85,7 @@ export const unblockEmployer = (employerId) => async (dispatch) => {
   dispatch(requestStart());
   try {
     const { data } = await axios.post(
-      `http://localhost:8000/api/v1/admin/unblock-employer/${employerId}`,
+      `https://job-portal-aq95.onrender.com/api/v1/admin/unblock-employer/${employerId}`,
       {},
       { withCredentials: true }
     );
@@ -99,7 +99,7 @@ export const unblockEmployer = (employerId) => async (dispatch) => {
 export const getBlockedEmployers = () => async (dispatch) => {
   dispatch(requestStart());
   try {
-    const { data } = await axios.get("http://localhost:8000/api/v1/admin/blocked-employers", {
+    const { data } = await axios.get("https://job-portal-aq95.onrender.com/api/v1/admin/blocked-employers", {
       withCredentials: true,
     });
     console.log(data)
@@ -113,7 +113,7 @@ export const getBlockedEmployers = () => async (dispatch) => {
 export const getAllUsers = () => async (dispatch) => {
   dispatch(requestStart());
   try {
-    const { data } = await axios.get("http://localhost:8000/api/v1/admin/users", {
+    const { data } = await axios.get("https://job-portal-aq95.onrender.com/api/v1/admin/users", {
       withCredentials: true,
     });
     dispatch(getAllUsersSuccess(data.users));
@@ -128,7 +128,7 @@ export const getEmployerJobs = (employerId) => async (dispatch) => {
   try {
 
     const response = await axios.get(
-      `http://localhost:8000/api/v1/admin/employer/${employerId}/jobs`,
+      `https://job-portal-aq95.onrender.com/api/v1/admin/employer/${employerId}/jobs`,
       { withCredentials: true }
     );
  

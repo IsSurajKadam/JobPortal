@@ -56,7 +56,7 @@ export const scheduleInterview = (applicationId, jobId, candidateId, data) => as
   dispatch(interviewSlice.actions.requestStart());
   try {
     const response = await axios.post(
-      `http://localhost:8000/api/v1/interview/schedule/${applicationId}/${jobId}/${candidateId}`,
+      `https://job-portal-aq95.onrender.com/api/v1/interview/schedule/${applicationId}/${jobId}/${candidateId}`,
       data,
       { withCredentials: true }
     );
@@ -76,7 +76,7 @@ export const fetchUserInterviews = (userId) => async (dispatch) => {
   dispatch(interviewSlice.actions.requestStart());
   try {
     const response = await axios.get(
-      `http://localhost:8000/api/v1/interview/myInterviews/${userId}`,
+      `https://job-portal-aq95.onrender.com/api/v1/interview/myInterviews/${userId}`,
       { withCredentials: true }
     );
     dispatch(interviewSlice.actions.requestSuccess(response.data.interviews));
@@ -95,7 +95,7 @@ export const updateInterviewStatus = (id, status) => async (dispatch) => {
 
   try {
     const response = await axios.post(
-      `http://localhost:8000/api/v1/interview/status/${id}`,
+      `https://job-portal-aq95.onrender.com/api/v1/interview/status/${id}`,
       { status },
       { withCredentials: true }
     );
@@ -117,7 +117,7 @@ export const deleteInterview = (id) => async (dispatch) => {
   dispatch(interviewSlice.actions.requestStart());
   try {
     await axios.delete(
-      `http://localhost:8000/api/v1/interview/delete/${id}`,
+      `https://job-portal-aq95.onrender.com/api/v1/interview/delete/${id}`,
       { withCredentials: true }
     );
 
