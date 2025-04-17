@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -20,10 +20,8 @@ const Dashboard = () => {
   const [componentName, setComponentName] = useState("My Profile");
   const [isMobile, setIsMobile] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { loading, message, blockedEmployers } = useSelector(
-    (state) => state.admin
-  );
-  const { isAuthenticated, error, user } = useSelector((state) => state.user);
+  const { loading, message } = useSelector((state) => state.admin);
+  const { error, user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -33,7 +31,7 @@ const Dashboard = () => {
       setIsMobile(mobile);
       if (!mobile) setIsSidebarOpen(true);
     };
-    
+
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
@@ -41,15 +39,17 @@ const Dashboard = () => {
 
   useEffect(() => {
     dispatch(getBlockedEmployers());
-
-    if (error) {
-      toast.error(error);
-      dispatch(clearAdminErrors());
-    }
-    if (message) {
-      toast.success(message);
-    }
+    if (error) toast.error(error);
+    if (message) toast.success(message);
   }, [dispatch, error, message]);
+
+  useEffect(() => {
+    if (isMobile && isSidebarOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [isMobile, isSidebarOpen]);
 
   const renderComponent = () => {
     switch (componentName) {
@@ -89,14 +89,12 @@ const Dashboard = () => {
         isSidebarOpen={isSidebarOpen}
         setIsSidebarOpen={setIsSidebarOpen}
       />
-      
+
       <div
-        className={`flex-1 p-5 bg-white shadow-lg rounded-lg ${
-          isMobile
-            ? isSidebarOpen
-              ? "ml-0 opacity-50 pointer-events-none"
-              : "w-full transition-opacity duration-300"
-            : ""
+        className={`flex-1 p-5 bg-white shadow-lg rounded-lg transition-all duration-300 ${
+          isMobile && isSidebarOpen
+            ? "ml-0 opacity-50 pointer-events-none"
+            : "w-full opacity-100"
         }`}
         style={{ minHeight: "calc(100vh - 2rem)" }}
       >
