@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import {
   clearAllApplicationErrors,
@@ -9,9 +9,6 @@ import {
 } from "../store/slices/applicationSlice";
 import { toast } from "react-toastify";
 import { fetchSingleJob } from "../store/slices/jobSlice";
-import { IoMdCash } from "react-icons/io";
-import { FaToolbox } from "react-icons/fa";
-import { FaLocationDot } from "react-icons/fa6";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -19,15 +16,10 @@ import Forbidden from "./Forbidden";
 
 const PostApplication = () => {
   const { singleJob } = useSelector((state) => state.jobs);
-
   const { isAuthenticated, user } = useSelector((state) => state.user);
-
-  const { loading, error, message } = useSelector(
-    (state) => state.applications
-  );
+  const { loading, error, message } = useSelector((state) => state.applications);
 
   const { jobId } = useParams();
-  console.log(user);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -62,7 +54,7 @@ const PostApplication = () => {
       setPhone(user.phone || "");
       setAddress(user.address || "");
       setCoverLetter(user.coverLetter || "");
-      setResume(user.resume?.url || ""); // Get resume URL from user profile
+      setResume(user.resume?.url || "");
     }
     if (error) {
       toast.error(error);
@@ -78,15 +70,13 @@ const PostApplication = () => {
   return (
     <div>
       {isAuthenticated && user.role === "Job Seeker" ? (
-        <div className="max-w-7xl mx-auto flex justify-between my-10 gap-5">
-          <div className="w-full">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between my-10 gap-5">
+          <div className="w-full md:w-1/2">
             <form className="border w-[95%] px-10">
               <h2 className="font-semibold text-2xl py-5">Application Form</h2>
 
               <div>
-                <Label className="font-normal text-[17px] block py-4">
-                  Job Title
-                </Label>
+                <Label className="font-normal text-[17px] block py-4">Job Title</Label>
                 <Input
                   type="text"
                   className="max-w-[95%] font-semibold bg-slate-100"
@@ -96,9 +86,7 @@ const PostApplication = () => {
               </div>
 
               <div>
-                <Label className="font-normal text-[17px] block py-4">
-                  Your Name
-                </Label>
+                <Label className="font-normal text-[17px] block py-4">Your Name</Label>
                 <Input
                   type="text"
                   value={name}
@@ -108,9 +96,7 @@ const PostApplication = () => {
               </div>
 
               <div>
-                <Label className="font-normal text-[17px] block py-4">
-                  Email
-                </Label>
+                <Label className="font-normal text-[17px] block py-4">Email</Label>
                 <Input
                   type="text"
                   value={email}
@@ -120,9 +106,7 @@ const PostApplication = () => {
               </div>
 
               <div>
-                <Label className="font-normal text-[17px] block py-4">
-                  Phone Number
-                </Label>
+                <Label className="font-normal text-[17px] block py-4">Phone Number</Label>
                 <Input
                   type="number"
                   value={phone}
@@ -132,9 +116,7 @@ const PostApplication = () => {
               </div>
 
               <div>
-                <Label className="font-normal text-[17px] block py-4">
-                  Address
-                </Label>
+                <Label className="font-normal text-[17px] block py-4">Address</Label>
                 <Input
                   type="text"
                   value={address}
@@ -144,9 +126,7 @@ const PostApplication = () => {
               </div>
 
               <div>
-                <Label className="font-normal text-[17px] block py-4">
-                  Cover Letter
-                </Label>
+                <Label className="font-normal text-[17px] block py-4">Cover Letter</Label>
                 <textarea
                   rows="5"
                   className="border w-[95%]"
@@ -156,9 +136,7 @@ const PostApplication = () => {
               </div>
 
               <div>
-                <Label className="font-normal text-[17px] block py-4">
-                  Resume
-                </Label>
+                <Label className="font-normal text-[17px] block py-4">Resume</Label>
                 {resume ? (
                   <div className="flex items-center gap-4">
                     <Button
@@ -205,7 +183,8 @@ const PostApplication = () => {
             </form>
           </div>
 
-          <div className="w-full">
+          {/* Job Details (Hidden on mobile view) */}
+          <div className="w-full md:w-1/2 hidden md:block">
             <header>
               <h3 className="text-2xl font-semibold py-5">{singleJob.title}</h3>
               <p className="text-gray-600">{singleJob.location}</p>
