@@ -6,9 +6,8 @@ import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { clearAllJobErrors, fetchJobs } from "../store/slices/jobSlice";
 import { saveJob, unsaveJob } from "@/store/slices/userSlice";
 import Spinner from "@/components/Spinner";
-import { RadioGroup } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
-import { Bookmark, Search, BookmarkCheck } from "lucide-react";
+import { Bookmark, Search, BookmarkCheck, Filter } from "lucide-react";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import NoJobsFound from "@/components/NoJobsFound";
@@ -21,32 +20,33 @@ const Jobs = () => {
   const [niche, setNiche] = useState("");
   const [selectedNiche, setSelectedNiche] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [showSidebar, setShowSidebar] = useState(false); // Sidebar visibility for mobile
 
   const { jobs, loading, error } = useSelector((state) => state.jobs);
   const { savedJobs, isAuthenticated } = useSelector((state) => state.user);
 
   const cardVariants = {
     hidden: { opacity: 0, y: 20, scale: 0.95 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
+    visible: {
+      opacity: 1,
+      y: 0,
       scale: 1,
-      transition: { type: "spring", stiffness: 120, damping: 10 }
+      transition: { type: "spring", stiffness: 120, damping: 10 },
     },
-    hover: { scale: 1.02, boxShadow: "0px 10px 20px rgba(0,0,0,0.1)" }
+    hover: { scale: 1.02, boxShadow: "0px 10px 20px rgba(0,0,0,0.1)" },
   };
 
   const filterVariants = {
     hidden: { opacity: 0, x: -20 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       x: 0,
-      transition: { type: "spring", stiffness: 100 }
-    }
+      transition: { type: "spring", stiffness: 100 },
+    },
   };
 
   const staggerVariants = {
-    visible: { transition: { staggerChildren: 0.1, delayChildren: 0.2 } }
+    visible: { transition: { staggerChildren: 0.1, delayChildren: 0.2 } },
   };
 
   const cities = [
@@ -74,11 +74,13 @@ const Jobs = () => {
   const handleCityChange = (city) => {
     setCity(city === "All" ? "" : city);
     setSelectedCity(city);
+    setShowSidebar(false);
   };
 
   const handleNicheChange = (niche) => {
     setNiche(niche);
     setSelectedNiche(niche);
+    setShowSidebar(false);
   };
 
   const handleDetails = (jobId) => navigate(`/job/${jobId}`);
@@ -93,7 +95,7 @@ const Jobs = () => {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
       {/* Search Section */}
-      <motion.section 
+      <motion.section
         className="bg-gradient-to-r from-[#1B1D3E] to-[#2D3268] py-12 md:py-16"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -127,54 +129,74 @@ const Jobs = () => {
 
       {/* Main Content */}
       <section className="container mx-auto px-4 py-8">
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Filters Sidebar */}
-          <motion.aside
-            variants={filterVariants}
-            className="w-full lg:w-72 xl:w-80 bg-white shadow-xl rounded-2xl p-6"
-          >
-            <div className="space-y-8">
-              <div>
-                <h2 className="text-xl font-bold mb-4">Filter by City</h2>
-                <div className="grid grid-cols-1 gap-2">
-                  {cities.map((city) => (
-                    <motion.button
-                      key={city}
-                      whileHover={{ x: 5 }}
-                      className={`text-left px-4 py-2 rounded-lg ${
-                        selectedCity === city 
-                          ? 'bg-[#1B1D3E] text-white'
-                          : 'hover:bg-gray-50'
-                      }`}
-                      onClick={() => handleCityChange(city)}
-                    >
-                      {city}
-                    </motion.button>
-                  ))}
-                </div>
-              </div>
+        <div className="flex flex-col lg:flex-row gap-6 relative">
+          {/* Toggle Button for Mobile */}
+          <div className="lg:hidden mb-4">
+            <Button
+              variant="outline"
+              className="flex items-center gap-2"
+              onClick={() => setShowSidebar(!showSidebar)}
+            >
+              <Filter className="h-4 w-4" />
+              Filters
+            </Button>
+          </div>
 
-              <div>
-                <h2 className="text-xl font-bold mb-4">Filter by Niche</h2>
-                <div className="grid grid-cols-1 gap-2">
-                  {nichesArray.map((niche) => (
-                    <motion.button
-                      key={niche}
-                      whileHover={{ x: 5 }}
-                      className={`text-left px-4 py-2 rounded-lg ${
-                        selectedNiche === niche 
-                          ? 'bg-[#1B1D3E] text-white'
-                          : 'hover:bg-gray-50'
-                      }`}
-                      onClick={() => handleNicheChange(niche)}
-                    >
-                      {niche}
-                    </motion.button>
-                  ))}
+          {/* Filters Sidebar */}
+          <AnimatePresence>
+            {(showSidebar || window.innerWidth >= 1024) && (
+              <motion.aside
+                key="sidebar"
+                variants={filterVariants}
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                className="absolute z-20 lg:static w-full lg:w-72 xl:w-80 bg-white shadow-xl rounded-2xl p-6 lg:block"
+              >
+                <div className="space-y-8">
+                  <div>
+                    <h2 className="text-xl font-bold mb-4">Filter by City</h2>
+                    <div className="grid grid-cols-1 gap-2">
+                      {cities.map((city) => (
+                        <motion.button
+                          key={city}
+                          whileHover={{ x: 5 }}
+                          className={`text-left px-4 py-2 rounded-lg ${
+                            selectedCity === city
+                              ? 'bg-[#1B1D3E] text-white'
+                              : 'hover:bg-gray-50'
+                          }`}
+                          onClick={() => handleCityChange(city)}
+                        >
+                          {city}
+                        </motion.button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h2 className="text-xl font-bold mb-4">Filter by Niche</h2>
+                    <div className="grid grid-cols-1 gap-2">
+                      {nichesArray.map((niche) => (
+                        <motion.button
+                          key={niche}
+                          whileHover={{ x: 5 }}
+                          className={`text-left px-4 py-2 rounded-lg ${
+                            selectedNiche === niche
+                              ? 'bg-[#1B1D3E] text-white'
+                              : 'hover:bg-gray-50'
+                          }`}
+                          onClick={() => handleNicheChange(niche)}
+                        >
+                          {niche}
+                        </motion.button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </motion.aside>
+              </motion.aside>
+            )}
+          </AnimatePresence>
 
           {/* Job Cards Grid */}
           <div className="flex-1">
