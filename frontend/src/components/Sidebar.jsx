@@ -62,12 +62,10 @@ const Sidebar = ({
         component: "myInterviews",
       },
       { name: "Saved Jobs", icon: <FaCalendarAlt />, component: "savedJobs" },
-<<<<<<< HEAD
+
       {
         name:"Reports",icon:<GoReport/>,component:"myReports"
       }
-=======
->>>>>>> a6a2c2a0fb8f1b41d23b81567e860efaecc5fa51
     ],
     employer: [
       { name: "My Jobs", icon: <FaBriefcase />, component: "My Jobs" },
