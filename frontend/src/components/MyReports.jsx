@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaBuilding } from "react-icons/fa";
+import Spinner from "@/components/Spinner";
 import {
   FiBriefcase,
   FiFileText,
@@ -52,8 +53,8 @@ const MyReports = () => {
 
   if (loading) {
     return (
-      <div className="text-center py-8 text-indigo-600 animate-pulse">
-        Loading your reports...
+<div className="min-h-screen flex items-center justify-center">
+        <Spinner className="h-12 w-12 text-indigo-600" />
       </div>
     );
   }
