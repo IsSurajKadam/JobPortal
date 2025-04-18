@@ -91,7 +91,6 @@ const UserInterviewsList = () => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-<<<<<<< HEAD
       className="p-4 md:p-6"
     >
       {/* Desktop Table View */}
