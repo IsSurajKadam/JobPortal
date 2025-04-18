@@ -2,6 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { 
+  FiUser, 
+  FiBriefcase, 
+  FiLock, 
+  FiUnlock, 
+  FiEye,
+  FiX,
+  FiCheck,
+  FiAlertTriangle
+} from "react-icons/fi";
 import {
   getAllUsers,
   blockEmployer,
@@ -27,6 +37,11 @@ const rowVariants = {
   hidden: { opacity: 0, x: -50 },
   visible: { opacity: 1, x: 0 },
   exit: { opacity: 0, x: 50 },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
 };
 
 const modalVariants = {
@@ -86,104 +101,192 @@ const AdminUsersList = () => {
     navigate(`/employer/${employerId}`);
   };
 
+  const getRoleColor = (role) => {
+    switch(role) {
+      case 'Admin': return 'bg-purple-100 text-purple-800';
+      case 'Job Seeker': return 'bg-blue-100 text-blue-800';
+      case 'Employer': return 'bg-orange-100 text-orange-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="p-6 min-h-screen bg-gray-50"
+      className="p-4 md:p-8 min-h-screen bg-gradient-to-br from-gray-50 to-blue-50"
     >
-      <h2 className="text-2xl font-bold mb-6 text-gray-800 border-b-2 border-gray-300 pb-2">
-        Manage Users
+      <h2 className="text-2xl md:text-3xl font-bold mb-6 text-gray-800 flex items-center">
+        <FiUser className="mr-3 text-blue-600" />
+        <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          User Management
+        </span>
       </h2>
 
       {loading ? (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-center text-gray-600"
+          className="text-center py-12"
         >
-          Loading users...
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto" />
         </motion.div>
       ) : (
-        <motion.div
-          variants={tableVariants}
-          initial="hidden"
-          animate="visible"
-          className="bg-white rounded-xl shadow-lg border-2 border-gray-200 overflow-hidden"
-        >
-          <table className="w-full">
-            <thead className="bg-gray-100 border-b-2 border-gray-200">
-              <tr>
-                <th className="py-4 px-6 text-left text-gray-700 font-semibold">Name</th>
-                <th className="py-4 px-6 text-left text-gray-700 font-semibold">Role</th>
-                <th className="py-4 px-6 text-left text-gray-700 font-semibold">Email</th>
-                <th className="py-4 px-6 text-center text-gray-700 font-semibold">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <AnimatePresence>
-                {users.map((user) => (
-                  <motion.tr
-                    key={user._id}
-                    variants={rowVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                    className="border-b border-gray-100 hover:bg-gray-50"
-                    whileHover={{ scale: 1.005 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    <td className="py-4 px-6 text-gray-600">{user.name}</td>
-                    <td className="py-4 px-6">
-                      <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+        <>
+          {/* Desktop/Tablet Table */}
+          <div className="hidden md:block">
+            <motion.div
+              variants={tableVariants}
+              initial="hidden"
+              animate="visible"
+              className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden"
+            >
+              <table className="w-full">
+                <thead className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+                  <tr>
+                    <th className="py-5 px-6 text-left font-semibold">User</th>
+                    <th className="py-5 px-6 text-left font-semibold">Role</th>
+                    <th className="py-5 px-6 text-left font-semibold">Email</th>
+                    <th className="py-5 px-6 text-center font-semibold">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <AnimatePresence>
+                    {users.map((user) => (
+                      <motion.tr
+                        key={user._id}
+                        variants={rowVariants}
+                        className="border-b border-gray-100 hover:bg-blue-50 group"
+                        whileHover={{ scale: 1.005 }}
+                      >
+                        <td className="py-4 px-4 text-gray-800 font-medium">
+                          <div className="flex items-center">
+                            {user.role === 'Employer' ? 
+                              <FiBriefcase className="h-5 w-5 mr-3 text-orange-500" /> :
+                              <FiUser className="h-5 w-8 mr-1 text-blue-500" />}
+                            {user.name}
+                          </div>
+                        </td>
+                        <td className="py-4 px-4">
+                          <span className={`${getRoleColor(user.role)} px-1 py-1 rounded-full text-sm font-medium`}>
+                            {user.role}
+                          </span>
+                        </td>
+                        <td className="py-4 px-6 text-gray-600">{user.email}</td>
+                        <td className="py-4 px-6 text-center">
+                          {user.role === "Employer" ? (
+                            <div className="flex items-center justify-center space-x-3">
+                              <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center"
+                                onClick={() => handleViewJobs(user._id)}
+                              >
+                                <FiEye className="mr-2" />
+                                 Jobs
+                              </motion.button>
+                              {user.isBlocked ? (
+                                <motion.button
+                                  whileHover={{ scale: 1.05 }}
+                                  whileTap={{ scale: 0.95 }}
+                                  className="bg-green-500 text-white px-4 py-2 rounded-lg flex items-center"
+                                  onClick={() => handleUnblock(user._id)}
+                                >
+                                  <FiUnlock className="mr-2" />
+                                  Unblock
+                                </motion.button>
+                              ) : (
+                                <motion.button
+                                  whileHover={{ scale: 1.05 }}
+                                  whileTap={{ scale: 0.95 }}
+                                  className="bg-red-500 text-white px-4 py-2 rounded-lg flex items-center"
+                                  onClick={() => handleBlockClick(user)}
+                                >
+                                  <FiLock className="mr-2" />
+                                  Block
+                                </motion.button>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="text-gray-400 italic">No actions available</span>
+                          )}
+                        </td>
+                      </motion.tr>
+                    ))}
+                  </AnimatePresence>
+                </tbody>
+              </table>
+            </motion.div>
+          </div>
+
+          {/* Mobile Card Layout */}
+          <div className="md:hidden grid gap-4">
+            <AnimatePresence>
+              {users.map((user) => (
+                <motion.div
+                  key={user._id}
+                  variants={cardVariants}
+                  className="bg-white p-6 rounded-2xl shadow-lg border border-gray-200"
+                  whileHover={{ y: -3 }}
+                >
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        {user.role === 'Employer' ? 
+                          <FiBriefcase className="h-6 w-6 mr-3 text-orange-500" /> :
+                          <FiUser className="h-6 w-6 mr-3 text-blue-500" />}
+                        <h3 className="text-lg font-semibold text-gray-800">{user.name}</h3>
+                      </div>
+                      <span className={`${getRoleColor(user.role)} px-3 py-1 rounded-full text-sm`}>
                         {user.role}
                       </span>
-                    </td>
-                    <td className="py-4 px-6 text-gray-600">{user.email}</td>
-                    <td className="py-4 px-6 text-center">
-                      {user.role === "Employer" ? (
-                        <div className="flex items-center justify-center space-x-3">
+                    </div>
+
+                    <div className="text-gray-600">
+                      <p className="break-all">{user.email}</p>
+                    </div>
+
+                    {user.role === "Employer" && (
+                      <div className="space-y-2">
+                        <motion.button
+                          whileHover={{ scale: 1.02 }}
+                          className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center justify-center"
+                          onClick={() => handleViewJobs(user._id)}
+                        >
+                          <FiEye className="mr-2" />
+                          View Jobs
+                        </motion.button>
+                        {user.isBlocked ? (
                           <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-sm hover:bg-blue-600 transition-colors border-2 border-blue-600"
-                            onClick={() => handleViewJobs(user._id)}
+                            whileHover={{ scale: 1.02 }}
+                            className="w-full bg-green-500 text-white px-4 py-2 rounded-lg flex items-center justify-center"
+                            onClick={() => handleUnblock(user._id)}
                           >
-                            View Jobs
+                            <FiUnlock className="mr-2" />
+                            Unblock
                           </motion.button>
-                          {user.isBlocked ? (
-                            <motion.button
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.95 }}
-                              className="bg-green-500 text-white px-4 py-2 rounded-lg shadow-sm hover:bg-green-600 transition-colors border-2 border-green-600"
-                              onClick={() => handleUnblock(user._id)}
-                            >
-                              Unblock
-                            </motion.button>
-                          ) : (
-                            <motion.button
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.95 }}
-                              className="bg-red-500 text-white px-4 py-2 rounded-lg shadow-sm hover:bg-red-600 transition-colors border-2 border-red-600"
-                              onClick={() => handleBlockClick(user)}
-                            >
-                              Block
-                            </motion.button>
-                          )}
-                        </div>
-                      ) : (
-                        <span className="text-gray-400 italic">No actions available</span>
-                      )}
-                    </td>
-                  </motion.tr>
-                ))}
-              </AnimatePresence>
-            </tbody>
-          </table>
-        </motion.div>
+                        ) : (
+                          <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            className="w-full bg-red-500 text-white px-4 py-2 rounded-lg flex items-center justify-center"
+                            onClick={() => handleBlockClick(user)}
+                          >
+                            <FiLock className="mr-2" />
+                            Block
+                          </motion.button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        </>
       )}
 
+      {/* Modals */}
       <AnimatePresence>
         {selectedUser && (
           <motion.div
@@ -194,11 +297,18 @@ const AdminUsersList = () => {
           >
             <motion.div
               variants={modalVariants}
-              className="bg-white rounded-xl p-6 w-full max-w-md border-2 border-gray-300 shadow-xl"
+              className="bg-white rounded-2xl p-6 w-full max-w-md border border-gray-200 shadow-2xl"
             >
-              <h3 className="text-xl font-bold text-gray-800 mb-4">
-                Block {selectedUser.name}
-              </h3>
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xl font-bold text-gray-800 flex items-center">
+                  <FiAlertTriangle className="mr-2 text-red-500" />
+                  Block {selectedUser.name}
+                </h3>
+                <button onClick={() => setSelectedUser(null)}>
+                  <FiX className="text-gray-500 hover:text-gray-700" />
+                </button>
+              </div>
+              
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -207,38 +317,34 @@ const AdminUsersList = () => {
                   <select
                     value={duration}
                     onChange={(e) => setDuration(parseInt(e.target.value))}
-                    className="w-full p-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   >
                     <option value={7}>7 Days</option>
                     <option value={14}>14 Days</option>
                     <option value={30}>30 Days</option>
                   </select>
                 </div>
-                <div className="flex justify-end space-x-3">
+                <div className="flex justify-end gap-3">
                   <motion.button
                     whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="px-4 py-2 text-gray-700 border-2 border-gray-300 rounded-lg hover:bg-gray-50"
+                    className="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center"
                     onClick={() => setSelectedUser(null)}
                   >
-                    Cancel
+                    <FiX className="mr-2" /> Cancel
                   </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 border-2 border-red-600"
+                    className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 flex items-center"
                     onClick={handleBlockConfirm}
                   >
-                    Confirm Block
+                    <FiLock className="mr-2" /> Confirm Block
                   </motion.button>
                 </div>
               </div>
             </motion.div>
           </motion.div>
         )}
-      </AnimatePresence>
 
-      <AnimatePresence>
         {confirmUnblock && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -248,30 +354,36 @@ const AdminUsersList = () => {
           >
             <motion.div
               variants={modalVariants}
-              className="bg-white rounded-xl p-6 w-full max-w-md border-2 border-gray-300 shadow-xl"
+              className="bg-white rounded-2xl p-6 w-full max-w-md border border-gray-200 shadow-2xl"
             >
-              <h3 className="text-xl font-bold text-gray-800 mb-4">
-                Confirm Unblock
-              </h3>
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xl font-bold text-gray-800 flex items-center">
+                  <FiAlertTriangle className="mr-2 text-green-500" />
+                  Confirm Unblock
+                </h3>
+                <button onClick={() => setConfirmUnblock(null)}>
+                  <FiX className="text-gray-500 hover:text-gray-700" />
+                </button>
+              </div>
+
               <p className="text-gray-600 mb-6">
                 Are you sure you want to unblock this employer?
               </p>
-              <div className="flex justify-end space-x-3">
+              
+              <div className="flex justify-end gap-3">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-4 py-2 text-gray-700 border-2 border-gray-300 rounded-lg hover:bg-gray-50"
+                  className="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center"
                   onClick={() => setConfirmUnblock(null)}
                 >
-                  Cancel
+                  <FiX className="mr-2" /> Cancel
                 </motion.button>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 border-2 border-green-600"
+                  className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 flex items-center"
                   onClick={confirmUnblockAction}
                 >
-                  Confirm Unblock
+                  <FiUnlock className="mr-2" /> Confirm Unblock
                 </motion.button>
               </div>
             </motion.div>

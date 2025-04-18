@@ -2,6 +2,7 @@ import { catchAsyncErrors } from '../middleware/catchAsyncErrors.js';
 import ErrorHandler from "../middleware/error.js";
 import { Job } from '../models/jobSchema.js';
 import Report from '../models/Report.js';
+
 export const submitReport = catchAsyncErrors(async (req, res, next) => {
   const { jobId } = req.params; // jobId passed in URL
   const { reason } = req.body;
@@ -67,5 +68,50 @@ export const updateReportStatus = catchAsyncErrors(async (req, res, next) => {
     success: true,
     message: "Report status updated successfully.",
     report,
+  });
+});
+
+export const deleteReport = catchAsyncErrors(async (req, res, next) => {
+  const { id } = req.params;
+
+  // Check if report exists
+  const report = await Report.findById(id);
+  if (!report) {
+    return next(new ErrorHandler("Report not found.", 404));
+  }
+
+  // Verify admin privileges
+  if (req.user.role !== "Admin") {
+    return next(
+      new ErrorHandler("You are not authorized to delete reports.", 403)
+    );
+  }
+
+  // Delete the report
+  await Report.findByIdAndDelete(id);
+
+  res.status(200).json({
+    success: true,
+    message: "Report deleted successfully.",
+  });
+});
+
+export const getMyReports = catchAsyncErrors(async (req, res, next) => {
+  // Get reports where reportedBy matches the logged-in user's ID
+  const reports = await Report.find({ reportedBy: req.user._id })
+    .sort({ createdAt: -1 }); // Sort by newest first
+
+  if (reports.length === 0) {
+    return res.status(200).json({
+      success: true,
+      message: "You haven't reported any jobs yet.",
+      reports: []
+    });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Your reported jobs retrieved successfully.",
+    reports
   });
 });

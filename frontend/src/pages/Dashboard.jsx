@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -13,34 +13,44 @@ import JobPost from "@/components/JobPost";
 import UserInterviewsList from "../components/UserInterviewsList";
 import SavedJobs from "@/components/SavedJobs";
 import AdminUsersList from "@/components/AdminUsersList";
+import MyReports from "@/components/MyReports";
 import AdminReports from "@/components/AdminReports";
 import { getBlockedEmployers } from "@/store/slices/adminSlice";
 
 const Dashboard = () => {
   const [componentName, setComponentName] = useState("My Profile");
-  const { loading, message, blockedEmployers } = useSelector(
-    (state) => state.admin
-  );
-  const { isAuthenticated, error, user } = useSelector((state) => state.user);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { loading, message } = useSelector((state) => state.admin);
+  const { error, user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
-  const navigateTo = useNavigate();
+  const navigate = useNavigate();
 
-  const hasRegistered = useRef(false); // Prevent duplicate event listeners
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
+      if (!mobile) setIsSidebarOpen(true);
+    };
 
-  // Fetch blocked employers when Dashboard loads or when message updates
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   useEffect(() => {
     dispatch(getBlockedEmployers());
-
-    if (error) {
-      toast.error(error);
-      dispatch(clearAdminErrors());
-    }
-    if (message) {
-      toast.success(message);
-    }
+    if (error) toast.error(error);
+    if (message) toast.success(message);
   }, [dispatch, error, message]);
 
-  // Store previous blocked employers to avoid unnecessary re-renders
+  useEffect(() => {
+    if (isMobile && isSidebarOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [isMobile, isSidebarOpen]);
 
   const renderComponent = () => {
     switch (componentName) {
@@ -61,20 +71,36 @@ const Dashboard = () => {
       case "myInterviews":
         return <UserInterviewsList />;
       case "savedJobs":
-        return navigateTo("/saved-jobs");
+        return navigate("/saved-jobs");
       case "Users":
         return <AdminUsersList />;
       case "Reports":
         return <AdminReports />;
+      case "myReports":
+          return <MyReports/>;
       default:
         return <MyProfile />;
     }
   };
 
   return (
-    <div className="max-w-7xl mx-auto flex gap-6">
-      <Sidebar setComponentName={setComponentName} />
-      <div className="flex-1 p-5 bg-white shadow-lg rounded-lg">
+    <div className={`max-w-7xl mx-auto ${isMobile ? "block" : "flex gap-6"}`}>
+      <Sidebar
+        setComponentName={setComponentName}
+        activeComponent={componentName}
+        isMobile={isMobile}
+        isSidebarOpen={isSidebarOpen}
+        setIsSidebarOpen={setIsSidebarOpen}
+      />
+
+      <div
+        className={`flex-1 p-5 bg-white shadow-lg rounded-lg transition-all duration-300 ${
+          isMobile && isSidebarOpen
+            ? "ml-0 opacity-50 pointer-events-none"
+            : "w-full opacity-100"
+        }`}
+        style={{ minHeight: "calc(100vh - 2rem)" }}
+      >
         {renderComponent()}
       </div>
     </div>
