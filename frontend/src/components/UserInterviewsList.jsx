@@ -376,7 +376,7 @@ const UserInterviewsList = () => {
         {loading ? (
           <div className="min-h-[200px] flex items-center justify-center">
             <Spinner />
->>>>>>> a6a2c2a0fb8f1b41d23b81567e860efaecc5fa51
+
           </div>
         ) : interviews.length > 0 ? (
           <AnimatePresence>
@@ -387,7 +387,7 @@ const UserInterviewsList = () => {
                 initial="hidden"
                 animate="visible"
                 exit="hidden"
-<<<<<<< HEAD
+
                 className="bg-white border border-gray-200 rounded-2xl p-4 shadow-lg"
                 whileHover={{ y: -2 }}
               >
@@ -474,7 +474,7 @@ const UserInterviewsList = () => {
                           <FiMessageSquare className="mr-2" /> Feedback
                         </Button>
                       </motion.div>
-=======
+
                 className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm"
               >
                 <h2 className="text-lg font-semibold text-blue-600">{interview.jobId.title}</h2>
@@ -553,7 +553,7 @@ const UserInterviewsList = () => {
                       >
                         <FiMessageSquare className="mr-2" /> Feedback
                       </Button>
->>>>>>> a6a2c2a0fb8f1b41d23b81567e860efaecc5fa51
+
                     )}
                   </div>
                 </div>
@@ -561,7 +561,7 @@ const UserInterviewsList = () => {
             ))}
           </AnimatePresence>
         ) : (
-<<<<<<< HEAD
+
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -569,11 +569,11 @@ const UserInterviewsList = () => {
           >
             No interviews scheduled yet
           </motion.div>
-=======
+
           <div className="p-4 text-center text-gray-500">
             No interviews found
           </div>
->>>>>>> a6a2c2a0fb8f1b41d23b81567e860efaecc5fa51
+
         )}
       </div>
     </motion.div>
