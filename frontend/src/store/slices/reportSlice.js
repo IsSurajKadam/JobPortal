@@ -78,7 +78,7 @@ export const submitReport = ({ jobId, reason }) => async (dispatch) => {
   dispatch(reportRequest());
   try {
     const { data } = await axios.post(
-      `http://localhost:8000/api/v1/report/${jobId}`,
+      `https://job-portal-aq95.onrender.com/api/v1/report/${jobId}`,
       { reason },
       { withCredentials: true }
     );
@@ -95,7 +95,7 @@ export const submitReport = ({ jobId, reason }) => async (dispatch) => {
 export const getAllReports = () => async (dispatch) => {
   dispatch(reportRequest());
   try {
-    const { data } = await axios.get("http://localhost:8000/api/v1/reports", {
+    const { data } = await axios.get("https://job-portal-aq95.onrender.com/api/v1/reports", {
       withCredentials: true,
     });
     dispatch(getReportsSuccess({ reports: data.reports, message: data.message }));
@@ -107,7 +107,7 @@ export const updateReportStatus = (reportId, status) => async (dispatch) => {
   dispatch(reportRequest());
   try {
     const { data } = await axios.put(
-      `http://localhost:8000/api/v1/reports/${reportId}`,
+      `https://job-portal-aq95.onrender.com/api/v1/reports/${reportId}`,
       { status },
       { withCredentials: true }
     );
@@ -120,7 +120,7 @@ export const updateReportStatus = (reportId, status) => async (dispatch) => {
 export const getMyReports = () => async (dispatch) => {
   dispatch(reportRequest());
   try {
-    const { data } = await axios.get("http://localhost:8000/api/v1/reports/me", {
+    const { data } = await axios.get("https://job-portal-aq95.onrender.com/api/v1/reports/me", {
       withCredentials: true,
     });
     dispatch(myReportsSuccess({ 
@@ -138,7 +138,7 @@ export const deleteReport = (reportId) => async (dispatch) => {
   dispatch(reportRequest());
   try {
     const { data } = await axios.delete(
-      `http://localhost:8000/api/v1/reports/${reportId}`,
+      `https://job-portal-aq95.onrender.com/api/v1/reports/${reportId}`,
       { withCredentials: true }
     );
     dispatch(deleteReportSuccess({ 
