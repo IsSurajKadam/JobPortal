@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getUser } from "@/store/slices/userSlice";
 import { toast } from "react-toastify";
 import {
   clearAllJobErrors,
   postJob,
   resetJobSlice,
 } from "../store/slices/jobSlice";
-
-
 
 const JobPost = () => {
   const [formData, setFormData] = useState({
@@ -26,19 +23,10 @@ const JobPost = () => {
     personalWebsiteTitle: "",
     personalWebsiteUrl: "",
     validityPeriod: "",
-
   });
 
   const dispatch = useDispatch();
   const { error, message } = useSelector((state) => state.jobs);
-  const { skillAssessments } = useSelector((state) => state.skillAssessments);
-  const { isAuthenticated, user } = useSelector((state) => state.user);
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      dispatch(getUser());
-    }
-  }, [dispatch, user]);
 
   useEffect(() => {
     if (error) {
@@ -63,7 +51,6 @@ const JobPost = () => {
         personalWebsiteTitle: "",
         personalWebsiteUrl: "",
         validityPeriod: "",
-
       });
     }
   }, [error, message, dispatch]);
@@ -94,11 +81,6 @@ const JobPost = () => {
   // Handle form submit
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (isAuthenticated) {
-      if (user.isBlocked) {
-        alert("You are blocked");
-      }
-    }
 
     if (!formData.validityPeriod) {
       toast.error("Please select job validity period.");
@@ -109,7 +91,7 @@ const JobPost = () => {
       ...formData,
       expiryDate: calculateExpireDate(formData.validityPeriod), // Fixed key name
     };
-    console.log("formdata:", formData);
+
     dispatch(postJob(jobData));
   };
 
@@ -218,8 +200,6 @@ const JobPost = () => {
             <option value="Yes">Yes</option>
           </select>
         </div>
-     
-        
 
         {/* Job Niche */}
         <div>
