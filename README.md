@@ -2,6 +2,15 @@
 
 A full-stack Job Portal application with separate backend and frontend projects.
 
+## Interface
+
+Screenshots and UI assets are in the `Interface/` folder.
+
+Example interface:
+
+![Home Page](Interface/Home.png)
+![Jobs Listing](Interface/jobs.png)
+
 ## Project Structure
 
 ```
@@ -110,15 +119,6 @@ Content-Type: application/json
    ```sh
    npm run dev
    ```
-
-## Interface
-
-Screenshots and UI assets are in the `Interface/` folder.
-
-Example interface:
-
-![Home Page](Interface/Home.png)
-![Jobs Listing](Interface/jobs.png)
 
 ## License
 
